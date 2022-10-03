@@ -1,0 +1,35 @@
+{
+  "canisters": {
+    "proxy_backend": {
+      "main": "src/proxy_backend/main.mo",
+      "type": "motoko"
+    },
+    "proxy_frontend": {
+      "dependencies": [
+        "proxy_backend"
+      ],
+      "frontend": {
+        "entrypoint": "src/proxy_frontend/src/index.html"
+      },
+      "source": [
+        "src/proxy_frontend/assets",
+        "dist/proxy_frontend/"
+      ],
+      "type": "assets"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "dfx": "0.11.2",
+  "networks": {
+    "local": {
+      "bind": "127.0.0.1:8000",
+      "type": "ephemeral"
+    }
+  },
+  "version": 1
+}
