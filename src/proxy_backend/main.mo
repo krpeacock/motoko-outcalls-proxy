@@ -1,9 +1,15 @@
+import Blob "mo:base/Blob";
 import Cycles "mo:base/ExperimentalCycles";
 import Text "mo:base/Float";
 import Types "Types";
 
 actor {
   public func proxy(url : Text) : async Types.CanisterHttpResponsePayload {
+
+    let transform_context : Types.TransformContext = {
+      function = transform;
+      context = Blob.fromArray([]);
+    };
 
     // Construct canister request
     let request : Types.CanisterHttpRequestArgs = {
@@ -12,7 +18,7 @@ actor {
       headers = [];
       body = null;
       method = #get;
-      transform = ?(#function(transform));
+      transform = ?transform_context;
     };
     Cycles.add(220_000_000_000);
     let ic : Types.IC = actor ("aaaaa-aa");
@@ -20,10 +26,10 @@ actor {
     response;
   };
 
-  public query func transform(raw : Types.CanisterHttpResponsePayload) : async Types.CanisterHttpResponsePayload {
+  public query func transform(raw : Types.TransformArgs) : async Types.CanisterHttpResponsePayload {
     let transformed : Types.CanisterHttpResponsePayload = {
-      status = raw.status;
-      body = raw.body;
+      status = raw.response.status;
+      body = raw.response.body;
       headers = [
         {
           name = "Content-Security-Policy";
