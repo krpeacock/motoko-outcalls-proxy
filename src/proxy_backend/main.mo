@@ -1,4 +1,3 @@
-import Blob "mo:base/Blob";
 import Cycles "mo:base/ExperimentalCycles";
 import Text "mo:base/Float";
 import Types "Types";
@@ -8,12 +7,12 @@ actor {
 
     let transform_context : Types.TransformContext = {
       function = transform;
-      context = Blob.fromArray([]);
+      context = "";
     };
 
     // Construct canister request
     let request : Types.CanisterHttpRequestArgs = {
-      url = url;
+      url;
       max_response_bytes = null;
       headers = [];
       body = null;
@@ -21,16 +20,14 @@ actor {
       transform = ?transform_context;
     };
     Cycles.add(220_000_000_000);
-    let ic : Types.IC = actor ("aaaaa-aa");
+    let ic : Types.IC = actor "aaaaa-aa";
     let response : Types.CanisterHttpResponsePayload = await ic.http_request(request);
     response;
   };
 
   public query func transform(raw : Types.TransformArgs) : async Types.CanisterHttpResponsePayload {
     let transformed : Types.CanisterHttpResponsePayload = {
-      status = raw.response.status;
-      body = raw.response.body;
-      headers = [
+      raw.response with headers = [
         {
           name = "Content-Security-Policy";
           value = "default-src 'self'";
